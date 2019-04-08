@@ -1,0 +1,80 @@
+﻿
+@using PagedList.Mvc;
+@model PagedList.IPagedList<LgbtiLibrary.MVC.Models.Book>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Кагалог";
+}
+
+<h2 style="color: white">Каталог</h2>
+
+@if (this.User.IsInRole("admin"))
+{
+    <p>
+        @Html.ActionLink("Създай нова книга", "Create")
+    </p>
+}
+
+
+<table class="table table-responsive">
+    <tr>
+        <th style="color: white">
+            Книгата
+            @*@Html.DisplayNameFor(model => model.UrlImage)*@
+        </th>
+        <th style="color: white">
+            Заглавие
+            @*@Html.DisplayNameFor(model => model.Title)*@
+        </th>
+        <th style="color: white">
+            Име на автор
+            @*@Html.DisplayNameFor(model => model.Author.Name)*@
+        </th>
+
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td style="color: white">
+                <a href="/Books/Details/@item.BookId">
+                    <img src=@item.UrlImage class="img-rounded" width="60" height="100" />
+                </a>
+
+                @*@Html.DisplayFor(modelItem => item.UrlImage)*@
+            </td>
+            <td style="color: white">
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td style="color: white">
+                @Html.DisplayFor(modelItem => item.Author.Name)
+            </td>
+
+            @{
+                if (User.IsInRole("admin"))
+                {
+                    <td>
+                        @Html.ActionLink("Модифицирай", "Edit", new { id = item.BookId }) |
+                        @Html.ActionLink("Детайлно виждане", "Details", new { id = item.BookId }) |
+                        @Html.ActionLink("Изтрий", "Delete", new { id = item.BookId })
+                    </td>
+                }
+            }
+
+
+        </tr>
+
+    }
+
+
+
+</table>
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("GetBooks",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+

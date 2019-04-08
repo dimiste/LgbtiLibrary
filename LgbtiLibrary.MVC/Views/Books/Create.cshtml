@@ -1,0 +1,89 @@
+﻿@model LgbtiLibrary.MVC.Models.Book
+
+@{
+    ViewBag.Title = "Създаване на нова книга";
+}
+
+<h2>Създаване на нова книга</h2>
+
+
+
+@using (Html.BeginForm("Create", "Books", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Author, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("AuthorId", string.Empty);
+                @Html.ValidationMessageFor(model => model.Author, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("CategoryId", string.Empty);
+                @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.UrlBook, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            @Html.Label("", labelText: "Качи книгата в .pdf", htmlAttributes: new { @class = "control-label col-md-2" })
+
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.UrlBook, new { htmlAttributes = new { @class = "form-control" } })*@
+
+
+                <input type="file" name="content" id="content" />
+                @Html.ValidationMessageFor(model => model.UrlBook, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.UrlImage, htmlAttributes: new { @class = "control-label col-md-2" })*@
+
+            @Html.Label("", labelText: "Качи снимка", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.UrlImage, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.UrlImage, "", new { @class = "text-danger" })*@
+
+                <input type="file" name="picture" id="picture" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Създай" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Обратно към каталога", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

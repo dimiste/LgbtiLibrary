@@ -1,0 +1,28 @@
+﻿
+
+@{
+    ViewBag.Title = "Кагалог";
+}
+
+<h2 style="color: white">Избери категория</h2>
+
+
+<div class="panel-body">
+    @using (Ajax.BeginForm("CategorySearch", "Books",
+       new AjaxOptions
+       {
+           InsertionMode = InsertionMode.Replace,
+           HttpMethod = "GET",
+           UpdateTargetId = "searchresults",
+       }))
+    {
+
+        @Html.DropDownList("CategoryId", null, "Избери Категория", new { @class = "btn btn-primary" })
+        <input type="submit" value="Търси" class="btn btn-primary" />
+    }
+    <div id="searchresults"></div>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+}

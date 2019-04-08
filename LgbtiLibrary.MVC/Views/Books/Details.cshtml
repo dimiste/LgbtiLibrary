@@ -1,0 +1,45 @@
+﻿@model LgbtiLibrary.MVC.Models.Book
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Book</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            <a href="../@Model.UrlBook">
+                <img src="../@Model.UrlImage" class="img-rounded" width="60" height="100"/>
+            </a>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @{ 
+        if (User.IsInRole("admin"))
+        {
+            @Html.ActionLink("Edit", "Edit", new { id = Model.BookId }) 
+
+
+        }
+    }
+
+    |
+    @Html.ActionLink("Back to List", "Index")
+</p>
