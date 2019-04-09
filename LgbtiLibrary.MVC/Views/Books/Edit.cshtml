@@ -1,4 +1,4 @@
-﻿@model LgbtiLibrary.MVC.Models.Book
+﻿@model LgbtiLibrary.Data.Models.Book
 
 @{
     ViewBag.Title = "Edit";
@@ -30,6 +30,14 @@
         <div class="col-md-10">
             @Html.DropDownList("AuthorId", string.Empty);
             @Html.ValidationMessageFor(model => model.Author, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("CategoryId", string.Empty);
+            @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
         </div>
     </div>
 

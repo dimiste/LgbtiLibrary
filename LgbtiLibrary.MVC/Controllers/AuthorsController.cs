@@ -6,6 +6,8 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using LgbtiLibrary.Data.Data;
+using LgbtiLibrary.Data.Models;
 using LgbtiLibrary.MVC.Models;
 
 namespace LgbtiLibrary.MVC.Controllers

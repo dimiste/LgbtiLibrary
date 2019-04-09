@@ -1,4 +1,5 @@
-﻿using LgbtiLibrary.MVC.Models;
+﻿using LgbtiLibrary.Data.Data;
+using LgbtiLibrary.MVC.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;

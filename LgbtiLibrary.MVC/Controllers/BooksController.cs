@@ -7,6 +7,8 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using LgbtiLibrary.Data.Data;
+using LgbtiLibrary.Data.Models;
 using LgbtiLibrary.MVC.Models;
 using PagedList;
 
@@ -16,10 +18,15 @@ namespace LgbtiLibrary.MVC.Controllers
     {
         private LgbtiLibraryDb db = new LgbtiLibraryDb();
 
+        public BooksController()
+        {
+            this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name");
+            this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name");
+        }
+
         // GET: Books
         public ActionResult Index()
         {
-            this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name");
             return this.View();
         }
 
@@ -28,11 +35,6 @@ namespace LgbtiLibrary.MVC.Controllers
             int pageSize = 4;
             int pageNumber = (page ?? 1);
             return View(db.Books.OrderBy(b => b.BookId).ToPagedList(pageNumber, pageSize));
-        }
-
-        public ActionResult MyIndex()
-        {
-            return View(db.Books.Include(b => b.Author).ToList());
         }
 
         public ActionResult CategorySearch(string CategoryId, string sortOrder, string currentFilter, int? page)
@@ -61,11 +63,9 @@ namespace LgbtiLibrary.MVC.Controllers
 
 
         // GET: Books/Create
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public ActionResult Create()
         {
-            this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name");
-            this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name");
             return View();
         }
 
@@ -74,7 +74,7 @@ namespace LgbtiLibrary.MVC.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public ActionResult Create([Bind(Include = "BookId,Title,Description,UrlBook,UrlImage")] Book bookPost, FormCollection formCollection)
         {
             bookPost.BookId = Guid.NewGuid();
@@ -188,7 +188,8 @@ namespace LgbtiLibrary.MVC.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Book book = db.Books.Find(id);
-            this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name");
+            this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name", book.Author.AuthorId);
+            this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", book.Category.CategoryId);
             if (book == null)
             {
                 return HttpNotFound();
@@ -204,23 +205,37 @@ namespace LgbtiLibrary.MVC.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Edit([Bind(Include = "BookId,Title,Description,UrlBook,UrlImage")] Book bookPost, FormCollection formCollection)
         {
+            Book book = db.Books.Where(b => b.BookId == bookPost.BookId).Single();
+            book.Title = bookPost.Title;
+            book.Description = bookPost.Description;
+
+            Author author = null;
+            Category category = null;
+
+            ModelState.Remove("UrlBook");
+
+            var authorId = formCollection["AuthorId"];
+            var categoryId = formCollection["CategoryId"];
+
+            if (!string.IsNullOrEmpty(authorId))
+            {
+                ModelState.Remove("Author");
+                author = db.Authors.Where(a => a.AuthorId.ToString() == authorId).Single();
+
+                book.Author = author;
+            }
+
+            if (!string.IsNullOrEmpty(categoryId))
+            {
+                ModelState.Remove("Category");
+                category = db.Categories.Where(a => a.CategoryId.ToString() == categoryId).Single();
+
+                book.Category = category;
+            }
+
             if (ModelState.IsValid)
             {
                 string path = string.Empty;
-
-                Book book = db.Books.Where(b => b.BookId == bookPost.BookId).Single();
-
-
-
-                var authorId = formCollection["AuthorId"];
-
-                if (!string.IsNullOrEmpty(authorId))
-                {
-                    Author author = db.Authors.Where(a => a.AuthorId.ToString() == authorId).Single();
-
-                    book.Author = author;
-                }
-
 
                 foreach (string item in Request.Files)
                 {
@@ -248,14 +263,29 @@ namespace LgbtiLibrary.MVC.Controllers
 
                 }
 
-                //this.db.Entry(book).State = EntityState.Detached;
-                //this.db.Entry(author).State = EntityState.Detached;
-
                 db.Entry(book).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(bookPost);
+
+            if (author != null)
+            {
+                this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name", author.AuthorId);
+            }
+            //else
+            //{
+            //    this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name");
+            //}
+
+            if (category != null)
+            {
+                this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", category.CategoryId);
+            }
+            //else
+            //{
+            //    this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name");
+            //}
+            return View(book);
         }
 
         // GET: Books/Delete/5
