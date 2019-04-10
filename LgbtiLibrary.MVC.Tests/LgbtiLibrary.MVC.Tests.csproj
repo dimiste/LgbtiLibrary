@@ -98,12 +98,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\LgbtiLibrary.MVC\LgbtiLibrary.MVC.csproj">
-      <Project>{C148E57D-8CF5-4979-B314-BA8D285930E9}</Project>
-      <Name>LgbtiLibrary.MVC</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
