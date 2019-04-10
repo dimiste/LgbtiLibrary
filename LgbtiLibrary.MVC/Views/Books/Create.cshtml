@@ -28,6 +28,9 @@
             <div class="col-md-10">
                 @Html.DropDownList("AuthorId", string.Empty);
                 @Html.ValidationMessageFor(model => model.Author, "", new { @class = "text-danger" })
+                <p>
+                    Първо създай желаният Автор в отдел "Автори"
+                </p>
             </div>
         </div>
 
@@ -36,6 +39,9 @@
             <div class="col-md-10">
                 @Html.DropDownList("CategoryId", string.Empty);
                 @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
+                <p>
+                    Първо създай желаната Категория в отдел "Категории"
+                </p>
             </div>
         </div>
 
