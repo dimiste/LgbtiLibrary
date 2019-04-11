@@ -14,12 +14,7 @@ namespace LgbtiLibrary.MVC.Controllers
     {
         private ApplicationDbContext db = ApplicationDbContext.Create();
 
-        private static bool isAdmin = false;
-
-        public UsersController()
-        {
-            this.ViewBag.IsAdmin = null;
-        }
+        private static bool IsAdmin = false;
 
         // GET: Users
         public ActionResult Index()
@@ -48,14 +43,13 @@ namespace LgbtiLibrary.MVC.Controllers
             ApplicationUser user = db.Users.Find(id);
 
             this.ViewBag.IsAdmin = false;
-
+            IsAdmin = false;
 
             if (user == null)
             {
                 return HttpNotFound();
             }
 
-            //db.Users.Join(db.Roles, u => u.UserName, r => r.Name, (u, r) => new User() { Name = u.UserName, Role = r.Name});
 
             var roles = user.Roles.Where(r => r.UserId == id);
 
@@ -63,8 +57,8 @@ namespace LgbtiLibrary.MVC.Controllers
             {
                 if (role.RoleId == "1")
                 {
-                    isAdmin = true;
-                    this.ViewBag.IsAdmin = isAdmin;
+                    IsAdmin = true;
+                    this.ViewBag.IsAdmin = IsAdmin;
                 }
             }
 
@@ -87,19 +81,8 @@ namespace LgbtiLibrary.MVC.Controllers
 
             user.UserName = userPosted.UserName.Trim();
 
-            //var roles = user.Roles;
 
-            //foreach (var role in roles)
-            //{
-            //    if (role.RoleId == "1")
-            //    {
-            //        this.ViewBag.IsAdmin = true;
-            //    }
-            //}
-
-            bool isAdminPosted = AdminPosted;
-
-            if (isAdminPosted == true && isAdmin == false)
+            if (AdminPosted == true && IsAdmin == false)
             {
                 var adminRoleToAdd = new Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole() { RoleId = "1", UserId = user.Id };
                 var userRoleToRemove = user.Roles.Where(r => r.RoleId == "2").First();
@@ -108,7 +91,7 @@ namespace LgbtiLibrary.MVC.Controllers
                 user.Roles.Remove(userRoleToRemove);
             }
 
-            if (isAdminPosted == false && isAdmin == true)
+            if (AdminPosted == false && IsAdmin == true)
             {
                 var userRoleToAdd = new Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole() { RoleId = "2", UserId = user.Id };
                 var adminRoleToRemove = user.Roles.Where(r => r.RoleId == "1").First();
