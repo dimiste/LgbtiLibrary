@@ -5,11 +5,9 @@ using System.Web;
 
 namespace LgbtiLibrary.MVC.Models
 {
-    public class BookTest
+    public class AuthorViewModel
     {
-        public Guid BookTestId { get; set; }
+        public Guid AuthorId { get; set; }
         public string Name { get; set; }
-        public string LastName { get; set; }
-        public HttpPostedFile File { get; set; }
     }
 }

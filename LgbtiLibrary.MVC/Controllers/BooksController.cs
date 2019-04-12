@@ -131,11 +131,6 @@ namespace LgbtiLibrary.MVC.Controllers
             }
 
 
-            //if (bookPost.UrlBook == null)
-            //{
-            //    ModelState.AddModelError("authorAndCategory", "Author and Category is requierds");
-            //}
-
             if (ModelState.IsValid)
             {
                 if (fileBook != null)
@@ -272,19 +267,13 @@ namespace LgbtiLibrary.MVC.Controllers
             {
                 this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name", author.AuthorId);
             }
-            //else
-            //{
-            //    this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name");
-            //}
+
 
             if (category != null)
             {
                 this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", category.CategoryId);
             }
-            //else
-            //{
-            //    this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name");
-            //}
+
             return View(book);
         }
 

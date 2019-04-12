@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.Mvc;
+﻿using LgbtiLibrary.MVC.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using LgbtiLibrary.MVC;
-using LgbtiLibrary.MVC.Controllers;
+
+using System.Web.Mvc;
 
 namespace LgbtiLibrary.MVC.Tests.Controllers
 {

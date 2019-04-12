@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LgbtiLibrary.MVC.Tests", "L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LgbtiLibrary.Data", "LgbtiLibrary.Data\LgbtiLibrary.Data.csproj", "{8D1F39BF-71E3-4CD6-B177-7F14916264F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LgbtiLibrary.Services", "LgbtiLibrary.Services\LgbtiLibrary.Services.csproj", "{808F90C7-BDAD-4575-96EB-F0A850B87A33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{8D1F39BF-71E3-4CD6-B177-7F14916264F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D1F39BF-71E3-4CD6-B177-7F14916264F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D1F39BF-71E3-4CD6-B177-7F14916264F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{808F90C7-BDAD-4575-96EB-F0A850B87A33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{808F90C7-BDAD-4575-96EB-F0A850B87A33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{808F90C7-BDAD-4575-96EB-F0A850B87A33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{808F90C7-BDAD-4575-96EB-F0A850B87A33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

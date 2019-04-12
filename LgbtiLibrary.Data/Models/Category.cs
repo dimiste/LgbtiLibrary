@@ -8,7 +8,7 @@ namespace LgbtiLibrary.Data.Models
 {
     public class Category
     {
-        public Guid CategoryId { get; set; }
-        public string Name { get; set; }
+        public virtual Guid CategoryId { get; set; }
+        public virtual string Name { get; set; }
     }
 }
