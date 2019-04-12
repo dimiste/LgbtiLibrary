@@ -17,6 +17,11 @@ namespace LgbtiLibrary.MVC.Controllers
     {
         private LgbtiLibraryDb db = new LgbtiLibraryDb();
 
+        public AuthorsController()
+        {
+
+        }
+
         // GET: Authors
         public ActionResult Index()
         {

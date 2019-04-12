@@ -8,16 +8,11 @@ namespace LgbtiLibrary.Services.Contracts
 {
     public interface ICategoryService
     {
-        CategoryModel FindById(Guid? id);
-
-        IQueryable<CategoryModel> GettAll();
-
-        void DeleteCategory(Guid id);
-
         void CreateCategoryWithNewGuid(Category category);
-
-        void EditCategory(Category category);
-
+        void DeleteCategory(Guid id);
         void Dispose();
+        void EditCategory(Category category);
+        CategoryModel FindById(Guid? id);
+        IQueryable<CategoryModel> GettAll();
     }
 }

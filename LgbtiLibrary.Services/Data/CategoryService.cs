@@ -46,7 +46,7 @@ namespace LgbtiLibrary.Services.Data
         {
             this.CreateGuid(category);
             this.categorySetWrapper.Add(category);
-            this.categorySetWrapper.SaveChanges();
+            this.SaveChanges();
            
         }
 
@@ -59,14 +59,18 @@ namespace LgbtiLibrary.Services.Data
         public void EditCategory(Category category)
         {
             this.categorySetWrapper.Update(category);
-            this.categorySetWrapper.SaveChanges();
+            this.SaveChanges();
         }
 
         public void DeleteCategory(Guid id)
         {
             Category category = this.categorySetWrapper.GetById(id);
-            this.categorySetWrapper.Delete(category);
-            this.SaveChanges();
+
+            if (category != null)
+            {
+                this.categorySetWrapper.Delete(category);
+                this.SaveChanges();
+            }
         }
 
         private void SaveChanges()

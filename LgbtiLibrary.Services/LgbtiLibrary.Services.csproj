@@ -45,8 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\ICategoryService.cs" />
+    <Compile Include="Data\AuthorService.cs" />
     <Compile Include="Data\BookService.cs" />
     <Compile Include="Data\CategoryService.cs" />
+    <Compile Include="Contracts\IAuthorService.cs" />
     <Compile Include="Models\AuthorModel.cs" />
     <Compile Include="Models\BookModel.cs" />
     <Compile Include="Models\CategoryModel.cs" />
