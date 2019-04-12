@@ -20,5 +20,7 @@ namespace LgbtiLibrary.Data.Contracts
         DbEntityEntry Entry(object entity);
 
         IDbSet<T> Set<T>() where T : class;
+
+        void Dispose();
     }
 }

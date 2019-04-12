@@ -13,12 +13,17 @@ namespace LgbtiLibrary.Data.Repositories
     {
         private readonly ILgbtiLibraryDb context;
 
-        public IDbSet<T> DbSet { get; set; }
+        private IDbSet<T> DbSet { get; set; }
 
         public EFRepository(ILgbtiLibraryDb context)
         {
             this.context = context;
             this.DbSet = this.context.Set<T>();
+        }
+
+        public T GetById(Guid id)
+        {
+            return this.DbSet.Find(id);
         }
 
         public IQueryable<T> All {
@@ -61,6 +66,11 @@ namespace LgbtiLibrary.Data.Repositories
         public void SaveChanges()
         {
             this.context.SaveChanges();
+        }
+
+        public void Dispose()
+        {
+            this.context.Dispose();
         }
     }
 }

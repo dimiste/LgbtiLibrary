@@ -215,11 +215,13 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AuthorViewModel.cs" />
+    <Compile Include="Models\BookViewModel.cs" />
     <Compile Include="Models\CategoryViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LgbtiLibraryDb.cs" />
     <Compile Include="Models\LgbtiLibraryDbInitializer.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Mapper.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -328,6 +330,10 @@
     <ProjectReference Include="..\LgbtiLibrary.Data\LgbtiLibrary.Data.csproj">
       <Project>{8D1F39BF-71E3-4CD6-B177-7F14916264F1}</Project>
       <Name>LgbtiLibrary.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LgbtiLibrary.Services\LgbtiLibrary.Services.csproj">
+      <Project>{808f90c7-bdad-4575-96eb-f0a850b87a33}</Project>
+      <Name>LgbtiLibrary.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using LgbtiLibrary.Data.Data;
+using LgbtiLibrary.Data.Models;
+using LgbtiLibrary.Data.Repositories;
+using LgbtiLibrary.MVC.Models;
+using LgbtiLibrary.Services.Contracts;
+using LgbtiLibrary.Services.Data;
+using LgbtiLibrary.Services.Models;
+using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using LgbtiLibrary.Data.Data;
-using LgbtiLibrary.Data.Models;
-using LgbtiLibrary.MVC.Models;
 
 namespace LgbtiLibrary.MVC.Controllers
 {
@@ -17,10 +18,17 @@ namespace LgbtiLibrary.MVC.Controllers
     {
         private LgbtiLibraryDb db = new LgbtiLibraryDb();
 
+        private readonly ICategoryService categoryService;
+
+        public CategoriesController()
+        {
+            this.categoryService = new CategoryService(new EFRepository<Category>(this.db));
+        }
+
         // GET: Categories
         public ActionResult Index()
         {
-            return View(db.Categories.ToList());
+            return View(this.categoryService.GettAll().Select(CategoryViewModel.Create));
         }
 
         // GET: Categories/Details/5
@@ -30,12 +38,15 @@ namespace LgbtiLibrary.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
-            if (category == null)
+
+            CategoryModel categoryModel = this.categoryService.FindById(id);
+            CategoryViewModel categoryViewModel = new CategoryViewModel(categoryModel);
+
+            if (categoryViewModel == null)
             {
                 return HttpNotFound();
             }
-            return View(category);
+            return View(categoryViewModel);
         }
 
         // GET: Categories/Create
@@ -49,17 +60,16 @@ namespace LgbtiLibrary.MVC.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CategoryId,Name")] Category category)
+        public ActionResult Create([Bind(Include = "CategoryId,Name")] CategoryViewModel categoryViewModel)
         {
             if (ModelState.IsValid)
             {
-                category.CategoryId = Guid.NewGuid();
-                db.Categories.Add(category);
-                db.SaveChanges();
+                this.categoryService.CreateCategoryWithNewGuid(Mapper.ToCategory(categoryViewModel));
+                
                 return RedirectToAction("Index");
             }
 
-            return View(category);
+            return View(categoryViewModel);
         }
 
         // GET: Categories/Edit/5
@@ -69,12 +79,15 @@ namespace LgbtiLibrary.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
-            if (category == null)
+            CategoryModel categoryModel = this.categoryService.FindById(id);
+            CategoryViewModel categoryViewModel = new CategoryViewModel(categoryModel);
+
+            if (categoryViewModel == null)
             {
                 return HttpNotFound();
             }
-            return View(category);
+
+            return View(categoryViewModel);
         }
 
         // POST: Categories/Edit/5
@@ -82,15 +95,14 @@ namespace LgbtiLibrary.MVC.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "CategoryId,Name")] Category category)
+        public ActionResult Edit([Bind(Include = "CategoryId,Name")] CategoryViewModel categoryViewModel)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(category).State = EntityState.Modified;
-                db.SaveChanges();
+                this.categoryService.EditCategory(Mapper.ToCategory(categoryViewModel));
                 return RedirectToAction("Index");
             }
-            return View(category);
+            return View(categoryViewModel);
         }
 
         // GET: Categories/Delete/5
@@ -100,12 +112,14 @@ namespace LgbtiLibrary.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
-            if (category == null)
+            CategoryModel categoryModel = this.categoryService.FindById(id);
+            CategoryViewModel categoryViewModel = new CategoryViewModel(categoryModel);
+
+            if (categoryViewModel == null)
             {
                 return HttpNotFound();
             }
-            return View(category);
+            return View(categoryViewModel);
         }
 
         // POST: Categories/Delete/5
@@ -113,9 +127,8 @@ namespace LgbtiLibrary.MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            Category category = db.Categories.Find(id);
-            db.Categories.Remove(category);
-            db.SaveChanges();
+            this.categoryService.DeleteCategory(id);
+
             return RedirectToAction("Index");
         }
 
@@ -123,7 +136,7 @@ namespace LgbtiLibrary.MVC.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                this.categoryService.Dispose();
             }
             base.Dispose(disposing);
         }
