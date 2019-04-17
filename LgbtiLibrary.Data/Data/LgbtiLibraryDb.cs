@@ -8,7 +8,7 @@ namespace LgbtiLibrary.Data.Data
     public class LgbtiLibraryDb : DbContext, ILgbtiLibraryDb
     {
 
-        public LgbtiLibraryDb() : base("name=TestsDb")
+        public LgbtiLibraryDb() : base("name=LgbtiLibraryDb")
         {
         }
 
