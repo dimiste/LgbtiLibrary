@@ -1,6 +1,7 @@
 ﻿using LgbtiLibrary.Data.Data;
 using LgbtiLibrary.Data.Models;
-
+using LgbtiLibrary.Data.Repositories;
+using LgbtiLibrary.Services.Data;
 using PagedList;
 
 using System;
@@ -18,10 +19,14 @@ namespace LgbtiLibrary.MVC.Controllers
     {
         private LgbtiLibraryDb db = new LgbtiLibraryDb();
 
+        private BookService bookService;
+
         public BooksController()
         {
             this.ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name");
             this.ViewBag.AuthorId = new SelectList(db.Authors, "Id", "Name");
+
+            this.bookService = new BookService(new EFRepository<Book>(db));
         }
 
         // GET: Books
@@ -32,9 +37,11 @@ namespace LgbtiLibrary.MVC.Controllers
 
         public ActionResult GetBooks(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            int pageSize = 4;
-            int pageNumber = (page ?? 1);
-            return View(db.Books.OrderBy(b => b.BookId).ToPagedList(pageNumber, pageSize));
+            //int pageSize = 4;
+            //int pageNumber = (page ?? 1);
+            //return View(db.Books.OrderBy(b => b.BookId).ToPagedList(pageNumber, pageSize));
+
+            return View(this.bookService.ToPagedList(sortOrder, currentFilter, searchString, page, 4));
         }
 
         public ActionResult CategorySearch(string CategoryId, string sortOrder, string currentFilter, int? page)
