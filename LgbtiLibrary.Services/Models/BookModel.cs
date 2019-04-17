@@ -2,7 +2,7 @@
 
 namespace LgbtiLibrary.Services.Models
 {
-    public class BookModel
+    public class BookModel : IBookModel
     {
         public virtual Guid BookId { get; set; }
 

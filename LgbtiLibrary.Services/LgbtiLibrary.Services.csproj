@@ -61,6 +61,7 @@
     <Compile Include="Models\BookModel.cs" />
     <Compile Include="Models\CategoryModel.cs" />
     <Compile Include="Contracts\IBookElementModel.cs" />
+    <Compile Include="Contracts\IBookModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
