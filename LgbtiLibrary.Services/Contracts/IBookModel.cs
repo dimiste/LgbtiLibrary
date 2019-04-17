@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LgbtiLibrary.Services.Models;
+using System;
 
 namespace LgbtiLibrary.Services.Contracts
 {
