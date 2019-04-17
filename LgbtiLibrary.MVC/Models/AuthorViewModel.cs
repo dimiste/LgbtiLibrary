@@ -1,29 +1,18 @@
-﻿using LgbtiLibrary.Data.Models;
+﻿using LgbtiLibrary.MVC.Common.Contracts;
 using LgbtiLibrary.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace LgbtiLibrary.MVC.Models
 {
-    public class AuthorViewModel
+    public class AuthorViewModel : BookElementViewModel, IBookElementViewModel
     {
         public AuthorViewModel()
         {
 
         }
-
         public AuthorViewModel(AuthorModel author)
         {
-            this.AuthorId = author.AuthorId;
+            this.Id = author.Id;
             this.Name = author.Name;
         }
-
-        public Guid AuthorId { get; set; }
-
-        [Required]
-        public string Name { get; set; }
     }
 }

@@ -1,14 +1,9 @@
 ﻿using LgbtiLibrary.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+using LgbtiLibrary.Services.Contracts;
 
 namespace LgbtiLibrary.Services.Models
 {
-    public class AuthorModel
+    public class AuthorModel : BookElementModel, IBookElementModel
     {
         public AuthorModel()
         {
@@ -17,21 +12,8 @@ namespace LgbtiLibrary.Services.Models
 
         public AuthorModel(Author author)
         {
-            this.AuthorId = author.AuthorId;
+            this.Id = author.Id;
             this.Name = author.Name;
-        }
-
-        public Guid AuthorId { get; set; }
-        public string Name { get; set; }
-
-        public static Expression<Func<Author, AuthorModel>> Create {
-            get {
-                return c => new AuthorModel()
-                {
-                    AuthorId = c.AuthorId,
-                    Name = c.Name
-                };
-            }
         }
     }
 }

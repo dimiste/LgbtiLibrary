@@ -1,12 +1,13 @@
 ﻿using LgbtiLibrary.Data.Data;
 using LgbtiLibrary.Data.Models;
 using LgbtiLibrary.Data.Repositories;
+using LgbtiLibrary.MVC.Common;
+using LgbtiLibrary.MVC.Common.Contracts;
 using LgbtiLibrary.MVC.Models;
 using LgbtiLibrary.Services.Contracts;
 using LgbtiLibrary.Services.Data;
-using LgbtiLibrary.Services.Models;
+
 using System;
-using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -18,17 +19,17 @@ namespace LgbtiLibrary.MVC.Controllers
     {
         private LgbtiLibraryDb db = new LgbtiLibraryDb();
 
-        private readonly ICategoryService categoryService;
+        private readonly BookElementService bookElementService;
 
         public CategoriesController()
         {
-            this.categoryService = new CategoryService(new EFRepository<Category>(this.db));
+            this.bookElementService = new BookElementService(new EFRepository<BookElement>(this.db));
         }
 
         // GET: Categories
         public ActionResult Index()
         {
-            return View(this.categoryService.GettAll().Select(CategoryViewModel.Create));
+            return View(this.bookElementService.GettAllCategories().Select(BookElementViewModel.Create));
         }
 
         // GET: Categories/Details/5
@@ -39,14 +40,14 @@ namespace LgbtiLibrary.MVC.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            CategoryModel categoryModel = this.categoryService.FindById(id);
-            CategoryViewModel categoryViewModel = new CategoryViewModel(categoryModel);
+            IBookElementModel bookElementModel = this.bookElementService.FindById(id);
+            IBookElementViewModel bookElementViewModel = new BookElementViewModel(bookElementModel);
 
-            if (categoryViewModel == null)
+            if (bookElementViewModel == null)
             {
                 return HttpNotFound();
             }
-            return View(categoryViewModel);
+            return View(bookElementViewModel);
         }
 
         // GET: Categories/Create
@@ -60,11 +61,11 @@ namespace LgbtiLibrary.MVC.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CategoryId,Name")] CategoryViewModel categoryViewModel)
+        public ActionResult Create([Bind(Include = "Id,Name")] CategoryViewModel categoryViewModel)
         {
             if (ModelState.IsValid)
             {
-                this.categoryService.CreateCategoryWithNewGuid(Mapper.ToCategory(categoryViewModel));
+                this.bookElementService.CreateBookElementWithNewGuid(Mapper.ToCategory(categoryViewModel));
                 
                 return RedirectToAction("Index");
             }
@@ -79,15 +80,15 @@ namespace LgbtiLibrary.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CategoryModel categoryModel = this.categoryService.FindById(id);
-            CategoryViewModel categoryViewModel = new CategoryViewModel(categoryModel);
+            IBookElementModel bookElementModel = this.bookElementService.FindById(id);
+            IBookElementViewModel bookElementViewModel = new BookElementViewModel(bookElementModel);
 
-            if (categoryViewModel == null)
+            if (bookElementViewModel == null)
             {
                 return HttpNotFound();
             }
 
-            return View(categoryViewModel);
+            return View(bookElementViewModel);
         }
 
         // POST: Categories/Edit/5
@@ -95,14 +96,14 @@ namespace LgbtiLibrary.MVC.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "CategoryId,Name")] CategoryViewModel categoryViewModel)
+        public ActionResult Edit([Bind(Include = "Id,Name")] BookElementViewModel bookElementViewModel)
         {
             if (ModelState.IsValid)
             {
-                this.categoryService.EditCategory(Mapper.ToCategory(categoryViewModel));
+                this.bookElementService.EditBookElement(Mapper.ToBookElement(bookElementViewModel));
                 return RedirectToAction("Index");
             }
-            return View(categoryViewModel);
+            return View(bookElementViewModel);
         }
 
         // GET: Categories/Delete/5
@@ -112,14 +113,14 @@ namespace LgbtiLibrary.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CategoryModel categoryModel = this.categoryService.FindById(id);
-            CategoryViewModel categoryViewModel = new CategoryViewModel(categoryModel);
+            IBookElementModel bookElementModel = this.bookElementService.FindById(id);
+            IBookElementViewModel bookElementViewModel = new BookElementViewModel(bookElementModel);
 
-            if (categoryViewModel == null)
+            if (bookElementViewModel == null)
             {
                 return HttpNotFound();
             }
-            return View(categoryViewModel);
+            return View(bookElementViewModel);
         }
 
         // POST: Categories/Delete/5
@@ -127,7 +128,7 @@ namespace LgbtiLibrary.MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            this.categoryService.DeleteCategory(id);
+            this.bookElementService.DeleteBookElement(id);
 
             return RedirectToAction("Index");
         }
@@ -136,7 +137,7 @@ namespace LgbtiLibrary.MVC.Controllers
         {
             if (disposing)
             {
-                this.categoryService.Dispose();
+                this.bookElementService.Dispose();
             }
             base.Dispose(disposing);
         }

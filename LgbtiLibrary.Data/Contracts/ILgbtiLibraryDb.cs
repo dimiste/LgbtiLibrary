@@ -17,6 +17,8 @@ namespace LgbtiLibrary.Data.Contracts
 
         IDbSet<Category> Categories { get; set; }
 
+        IDbSet<BookElement> BookElements { get; set; }
+
         DbEntityEntry Entry(object entity);
 
         IDbSet<T> Set<T>() where T : class;

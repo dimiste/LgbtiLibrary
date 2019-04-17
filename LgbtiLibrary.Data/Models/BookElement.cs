@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace LgbtiLibrary.Data.Models
 {
-    public class Category : BookElement, IBookElement
+    public class BookElement : IBookElement
     {
-        
+        public virtual Guid Id { get; set; }
+        public virtual string Name { get; set; }
     }
 }

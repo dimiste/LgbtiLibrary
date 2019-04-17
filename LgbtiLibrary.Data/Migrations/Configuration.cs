@@ -1,6 +1,7 @@
 namespace LgbtiLibrary.Data.Migrations
 {
     using LgbtiLibrary.Data.Data;
+    using LgbtiLibrary.Data.Models;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -21,5 +22,6 @@ namespace LgbtiLibrary.Data.Migrations
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data.
         }
+
     }
 }

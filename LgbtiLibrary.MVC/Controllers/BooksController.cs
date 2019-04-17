@@ -1,5 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using LgbtiLibrary.Data.Data;
+using LgbtiLibrary.Data.Models;
+
+using PagedList;
+
+using System;
 using System.Data;
 using System.Data.Entity;
 using System.IO;
@@ -7,10 +11,6 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using LgbtiLibrary.Data.Data;
-using LgbtiLibrary.Data.Models;
-using LgbtiLibrary.MVC.Models;
-using PagedList;
 
 namespace LgbtiLibrary.MVC.Controllers
 {
@@ -20,8 +20,8 @@ namespace LgbtiLibrary.MVC.Controllers
 
         public BooksController()
         {
-            this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name");
-            this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name");
+            this.ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name");
+            this.ViewBag.AuthorId = new SelectList(db.Authors, "Id", "Name");
         }
 
         // GET: Books
@@ -41,7 +41,7 @@ namespace LgbtiLibrary.MVC.Controllers
         {
             int pageSize = 4;
             int pageNumber = (page ?? 1);
-            var result = db.Books.OrderBy(b => b.BookId).Where(b => b.Category.CategoryId.ToString() == CategoryId).ToPagedList(pageNumber, pageSize);
+            var result = db.Books.OrderBy(b => b.BookId).Where(b => b.Category.Id.ToString() == CategoryId).ToPagedList(pageNumber, pageSize);
             return View("_GetBooksByCategory", result);
         }
 
@@ -118,14 +118,14 @@ namespace LgbtiLibrary.MVC.Controllers
 
             if (!string.IsNullOrEmpty(authorId))
             {
-                author = db.Authors.Where(a => a.AuthorId.ToString() == authorId).Single();
+                author = db.Authors.Where(a => a.Id.ToString() == authorId).Single();
                 bookPost.Author = author;
                 ModelState.Remove("Author");
             }
 
             if (!string.IsNullOrEmpty(categoryId))
             {
-                category = db.Categories.Where(c => c.CategoryId.ToString() == categoryId).Single();
+                category = db.Categories.Where(c => c.Id.ToString() == categoryId).Single();
                 bookPost.Category = category;
                 ModelState.Remove("Category");
             }
@@ -154,7 +154,7 @@ namespace LgbtiLibrary.MVC.Controllers
 
             if (bookPost.Author != null)
             {
-                this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name", bookPost.Author.AuthorId);
+                this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name", bookPost.Author.Id);
             }
             else
             {
@@ -163,7 +163,7 @@ namespace LgbtiLibrary.MVC.Controllers
 
             if (bookPost.Category != null)
             {
-                this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", bookPost.Category.CategoryId);
+                this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", bookPost.Category.Id);
             }
             else
             {
@@ -183,8 +183,8 @@ namespace LgbtiLibrary.MVC.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Book book = db.Books.Find(id);
-            this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name", book.Author.AuthorId);
-            this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", book.Category.CategoryId);
+            this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name", book.Author.Id);
+            this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", book.Category.Id);
             if (book == null)
             {
                 return HttpNotFound();
@@ -215,7 +215,7 @@ namespace LgbtiLibrary.MVC.Controllers
             if (!string.IsNullOrEmpty(authorId))
             {
                 ModelState.Remove("Author");
-                author = db.Authors.Where(a => a.AuthorId.ToString() == authorId).Single();
+                author = db.Authors.Where(a => a.Id.ToString() == authorId).Single();
 
                 book.Author = author;
             }
@@ -223,7 +223,7 @@ namespace LgbtiLibrary.MVC.Controllers
             if (!string.IsNullOrEmpty(categoryId))
             {
                 ModelState.Remove("Category");
-                category = db.Categories.Where(a => a.CategoryId.ToString() == categoryId).Single();
+                category = db.Categories.Where(a => a.Id.ToString() == categoryId).Single();
 
                 book.Category = category;
             }
@@ -265,13 +265,13 @@ namespace LgbtiLibrary.MVC.Controllers
 
             if (author != null)
             {
-                this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name", author.AuthorId);
+                this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name", author.Id);
             }
 
 
             if (category != null)
             {
-                this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", category.CategoryId);
+                this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", category.Id);
             }
 
             return View(book);

@@ -1,14 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using LgbtiLibrary.Data.Data;
+using LgbtiLibrary.Data.Models;
+using LgbtiLibrary.Data.Repositories;
+using LgbtiLibrary.MVC.Common;
+using LgbtiLibrary.MVC.Common.Contracts;
+using LgbtiLibrary.MVC.Models;
+using LgbtiLibrary.Services.Contracts;
+using LgbtiLibrary.Services.Data;
+
+using System;
 using System.Data;
-using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using LgbtiLibrary.Data.Data;
-using LgbtiLibrary.Data.Models;
-using LgbtiLibrary.MVC.Models;
 
 namespace LgbtiLibrary.MVC.Controllers
 {
@@ -17,15 +20,17 @@ namespace LgbtiLibrary.MVC.Controllers
     {
         private LgbtiLibraryDb db = new LgbtiLibraryDb();
 
+        private readonly IBookElementService bookElementService;
+
         public AuthorsController()
         {
-
+            this.bookElementService = new BookElementService(new EFRepository<BookElement>(this.db));
         }
 
         // GET: Authors
         public ActionResult Index()
         {
-            return View(db.Authors.ToList());
+            return View(this.bookElementService.GettAllAuthors().Select(BookElementViewModel.Create));
         }
 
         // GET: Authors/Details/5
@@ -35,12 +40,14 @@ namespace LgbtiLibrary.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Author author = db.Authors.Find(id);
-            if (author == null)
+            IBookElementModel bookElementModel = this.bookElementService.FindById(id);
+            IBookElementViewModel bookElementViewModel = new BookElementViewModel(bookElementModel);
+
+            if (bookElementViewModel == null)
             {
                 return HttpNotFound();
             }
-            return View(author);
+            return View(bookElementViewModel);
         }
 
         // GET: Authors/Create
@@ -54,17 +61,15 @@ namespace LgbtiLibrary.MVC.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "AuthorId,Name")] Author author)
+        public ActionResult Create([Bind(Include = "Id,Name")] AuthorViewModel authorViewModel)
         {
             if (ModelState.IsValid)
             {
-                author.AuthorId = Guid.NewGuid();
-                db.Authors.Add(author);
-                db.SaveChanges();
+                this.bookElementService.CreateBookElementWithNewGuid(Mapper.ToAuthor(authorViewModel));
                 return RedirectToAction("Index");
             }
 
-            return View(author);
+            return View(authorViewModel);
         }
 
         // GET: Authors/Edit/5
@@ -74,12 +79,15 @@ namespace LgbtiLibrary.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Author author = db.Authors.Find(id);
-            if (author == null)
+
+            IBookElementModel bookElementModel = this.bookElementService.FindById(id);
+            IBookElementViewModel bookElementViewModel = new BookElementViewModel(bookElementModel);
+
+            if (bookElementViewModel == null)
             {
                 return HttpNotFound();
             }
-            return View(author);
+            return View(bookElementViewModel);
         }
 
         // POST: Authors/Edit/5
@@ -87,15 +95,14 @@ namespace LgbtiLibrary.MVC.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "AuthorId,Name")] Author author)
+        public ActionResult Edit([Bind(Include = "Id,Name")] BookElementViewModel bookElementViewModel)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(author).State = EntityState.Modified;
-                db.SaveChanges();
+                this.bookElementService.EditBookElement(Mapper.ToBookElement(bookElementViewModel));
                 return RedirectToAction("Index");
             }
-            return View(author);
+            return View(bookElementViewModel);
         }
 
         // GET: Authors/Delete/5
@@ -105,12 +112,15 @@ namespace LgbtiLibrary.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Author author = db.Authors.Find(id);
-            if (author == null)
+
+            IBookElementModel bookElementModel = this.bookElementService.FindById(id);
+            IBookElementViewModel bookElementViewModel = new BookElementViewModel(bookElementModel);
+
+            if (bookElementViewModel == null)
             {
                 return HttpNotFound();
             }
-            return View(author);
+            return View(bookElementViewModel);
         }
 
         // POST: Authors/Delete/5
@@ -118,9 +128,7 @@ namespace LgbtiLibrary.MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            Author author = db.Authors.Find(id);
-            db.Authors.Remove(author);
-            db.SaveChanges();
+            this.bookElementService.DeleteBookElement(id);
             return RedirectToAction("Index");
         }
 
@@ -128,7 +136,7 @@ namespace LgbtiLibrary.MVC.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                this.bookElementService.Dispose();
             }
             base.Dispose(disposing);
         }

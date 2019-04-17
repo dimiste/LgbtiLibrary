@@ -1,18 +1,14 @@
 ﻿using LgbtiLibrary.Data.Contracts;
 using LgbtiLibrary.Data.Models;
-using System;
-using System.Collections.Generic;
+
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LgbtiLibrary.Data.Data
 {
     public class LgbtiLibraryDb : DbContext, ILgbtiLibraryDb
     {
 
-        public LgbtiLibraryDb() : base("name=LgbtiLibraryDb")
+        public LgbtiLibraryDb() : base("name=TestsDb")
         {
         }
 
@@ -22,9 +18,12 @@ namespace LgbtiLibrary.Data.Data
 
         public IDbSet<Category> Categories { get; set; }
 
+        public IDbSet<BookElement> BookElements { get; set; }
+
         public new IDbSet<T> Set<T>() where T : class
         {
             return base.Set<T>();
         }
+
     }
 }
