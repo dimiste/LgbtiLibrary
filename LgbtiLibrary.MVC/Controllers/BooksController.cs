@@ -1,9 +1,9 @@
 ﻿using LgbtiLibrary.Data.Data;
 using LgbtiLibrary.Data.Models;
 using LgbtiLibrary.Data.Repositories;
+using LgbtiLibrary.Services.Contracts;
 using LgbtiLibrary.Services.Data;
-using PagedList;
-
+using LgbtiLibrary.Services.Models;
 using System;
 using System.Data;
 using System.Data.Entity;
@@ -37,18 +37,12 @@ namespace LgbtiLibrary.MVC.Controllers
 
         public ActionResult GetBooks(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            //int pageSize = 4;
-            //int pageNumber = (page ?? 1);
-            //return View(db.Books.OrderBy(b => b.BookId).ToPagedList(pageNumber, pageSize));
-
-            return View(this.bookService.ToPagedList(sortOrder, currentFilter, searchString, page, 4));
+            return View(this.bookService.BookListOrderById(sortOrder, currentFilter, searchString, page, 4));
         }
 
         public ActionResult CategorySearch(string CategoryId, string sortOrder, string currentFilter, int? page)
         {
-            int pageSize = 4;
-            int pageNumber = (page ?? 1);
-            var result = db.Books.OrderBy(b => b.BookId).Where(b => b.Category.Id.ToString() == CategoryId).ToPagedList(pageNumber, pageSize);
+            var result = this.bookService.BookListSearchByCategory(CategoryId, sortOrder, currentFilter, page, 4);
             return View("_GetBooksByCategory", result);
         }
 
@@ -59,13 +53,13 @@ namespace LgbtiLibrary.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Book book = db.Books.Find(id);
+            IBookModel bookModel = this.bookService.FindById(id);
 
-            if (book == null)
+            if (bookModel == null)
             {
                 return HttpNotFound();
             }
-            return View(book);
+            return View(bookModel);
         }
 
 
@@ -82,102 +76,112 @@ namespace LgbtiLibrary.MVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin")]
-        public ActionResult Create([Bind(Include = "BookId,Title,Description,UrlBook,UrlImage")] Book bookPost, FormCollection formCollection)
+        public ActionResult Create([Bind(Include = "BookId,Title,Description,UrlBook,UrlImage")] BookModel bookPost, FormCollection formCollection)
         {
-            bookPost.BookId = Guid.NewGuid();
+            //bookPost.BookId = Guid.NewGuid();
 
-            Author author;
-            Category category;
-            HttpPostedFileBase fileBook = null;
-            HttpPostedFileBase fileImg = null;
+            //Author author;
+            //Category category;
+            //HttpPostedFileBase fileBook = null;
+            //HttpPostedFileBase fileImg = null;
 
-            bookPost.Description = null;
+            //bookPost.Description = null;
 
-            var authorId = formCollection["AuthorId"];
-            var categoryId = formCollection["CategoryId"];
+            //var authorId = formCollection["AuthorId"];
+            //var categoryId = formCollection["CategoryId"];
 
-            foreach (string item in Request.Files)
-            {
+            //foreach (string item in Request.Files)
+            //{
 
-                HttpPostedFileBase file = Request.Files[item];
+            //    HttpPostedFileBase file = Request.Files[item];
 
-                if (file.ContentLength > 0)
-                {
-                    string extension = Path.GetExtension(file.FileName);
+            //    if (file.ContentLength > 0)
+            //    {
+            //        string extension = Path.GetExtension(file.FileName);
 
-                    string path = string.Empty;
+            //        string path = string.Empty;
 
-                    if (extension.ToLower() != ".pdf")
-                    {
-                        path = "../imgs/" + bookPost.BookId.ToString() + extension;
-                        fileImg = file; 
-                        bookPost.UrlImage = path;
-                    }
-                    else
-                    {
-                        path = "../Files/" + bookPost.BookId.ToString() + extension;
-                        fileBook = file;
-                        bookPost.UrlBook = path;
-                        ModelState.Remove("UrlBook");
-                    }
-                }
-            }
+            //        if (extension.ToLower() != ".pdf")
+            //        {
+            //            path = "../imgs/" + bookPost.BookId.ToString() + extension;
+            //            fileImg = file;
+            //            bookPost.UrlImage = path;
+            //        }
+            //        else
+            //        {
+            //            path = "../Files/" + bookPost.BookId.ToString() + extension;
+            //            fileBook = file;
+            //            bookPost.UrlBook = path;
+            //            ModelState.Remove("UrlBook");
+            //        }
+            //    }
+            //}
 
-            if (!string.IsNullOrEmpty(authorId))
-            {
-                author = db.Authors.Where(a => a.Id.ToString() == authorId).Single();
-                bookPost.Author = author;
-                ModelState.Remove("Author");
-            }
+            //if (!string.IsNullOrEmpty(authorId))
+            //{
+            //    author = db.Authors.Where(a => a.Id.ToString() == authorId).Single();
+            //    bookPost.Author = author;
+            //    ModelState.Remove("Author");
+            //}
 
-            if (!string.IsNullOrEmpty(categoryId))
-            {
-                category = db.Categories.Where(c => c.Id.ToString() == categoryId).Single();
-                bookPost.Category = category;
-                ModelState.Remove("Category");
-            }
+            //if (!string.IsNullOrEmpty(categoryId))
+            //{
+            //    category = db.Categories.Where(c => c.Id.ToString() == categoryId).Single();
+            //    bookPost.Category = category;
+            //    ModelState.Remove("Category");
+            //}
 
+            //if (bookPost.Author != null)
+            //{
+            //    this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name", bookPost.Author.Id);
+            //}
+            //else
+            //{
+            //    this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name");
+            //}
+
+            //if (bookPost.Category != null)
+            //{
+            //    this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", bookPost.Category.Id);
+            //}
+            //else
+            //{
+            //    this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name");
+            //}
+
+
+
+            //if (ModelState.IsValid)
+            //{
+            //    if (fileBook != null)
+            //    {
+            //        fileBook.SaveAs(this.Server.MapPath(bookPost.UrlBook));
+            //    }
+
+            //    if (fileImg != null)
+            //    {
+            //        fileImg.SaveAs(this.Server.MapPath(bookPost.UrlImage));
+            //    }
+            //    else
+            //    {
+            //        bookPost.UrlImage = "../imgs/libros.jpg";
+            //    }
+
+            //    db.Books.Add(bookPost);
+            //    db.SaveChanges();
+            //    return RedirectToAction("Index");
+            //}
+
+            this.bookService.CreateBook(bookPost, formCollection, this);
 
             if (ModelState.IsValid)
             {
-                if (fileBook != null)
-                {
-                    fileBook.SaveAs(this.Server.MapPath(bookPost.UrlBook));
-                }
-
-                if (fileImg != null)
-                {
-                    fileImg.SaveAs(this.Server.MapPath(bookPost.UrlImage));
-                }
-                else
-                {
-                    bookPost.UrlImage = "../imgs/libros.jpg";
-                }
-
-                db.Books.Add(bookPost);
-                db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            if (bookPost.Author != null)
-            {
-                this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name", bookPost.Author.Id);
-            }
-            else
-            {
-                this.ViewBag.AuthorId = new SelectList(db.Authors, "AuthorId", "Name");
-            }
-
-            if (bookPost.Category != null)
-            {
-                this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", bookPost.Category.Id);
-            }
-            else
-            {
-                this.ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name");
-            }
-
             return View();
+
+
         }
 
 
@@ -292,12 +296,12 @@ namespace LgbtiLibrary.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Book book = db.Books.Find(id);
-            if (book == null)
+            IBookModel bookModel = this.bookService.FindById(id);
+            if (bookModel == null)
             {
                 return HttpNotFound();
             }
-            return View(book);
+            return View(bookModel);
         }
 
         // POST: Books/Delete/5
@@ -306,9 +310,7 @@ namespace LgbtiLibrary.MVC.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            Book book = db.Books.Find(id);
-            db.Books.Remove(book);
-            db.SaveChanges();
+            this.bookService.DeleteBook(id);
             return RedirectToAction("Index");
         }
 
@@ -316,7 +318,7 @@ namespace LgbtiLibrary.MVC.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                this.bookService.Dispose();
             }
             base.Dispose(disposing);
         }
